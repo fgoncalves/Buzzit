@@ -8,7 +8,7 @@ import rx.Observable;
  * <p/>
  * Created by fred on 25.08.15.
  */
-public interface RemoveWord {
+public interface RemoveWordService {
 
   /**
    * Remove the given word from the data layer. The word will be permanently removed. If the word

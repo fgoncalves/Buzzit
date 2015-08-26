@@ -9,7 +9,7 @@ import rx.Observable;
  * <p/>
  * Created by fred on 25.08.15.
  */
-public interface GetAllWords {
+public interface GetAllWordsService {
 
   /**
    * Get all the available words.
