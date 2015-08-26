@@ -6,42 +6,53 @@
     android:clickable="true"
     tools:context=".BuzzitActivity">
 
-    <include
-        android:id="@+id/green_player_layout"
-        layout="@layout/green_player_layout"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"/>
+  <include
+      android:id="@+id/green_player_layout"
+      layout="@layout/green_player_layout"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentLeft="true"/>
 
-    <include
-        android:id="@+id/yellow_player_layout"
-        layout="@layout/yellow_player_layout"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"/>
+  <include
+      android:id="@+id/yellow_player_layout"
+      layout="@layout/yellow_player_layout"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_alignParentTop="true"
+      android:layout_alignParentRight="true"/>
 
-    <include
-        android:id="@+id/blue_player_layout"
-        layout="@layout/blue_player_layout"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"/>
+  <include
+      android:id="@+id/blue_player_layout"
+      layout="@layout/blue_player_layout"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentRight="true"/>
 
-    <include
-        android:id="@+id/red_player_layout"
-        layout="@layout/red_player_layout"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true" />
+  <include
+      android:id="@+id/red_player_layout"
+      layout="@layout/red_player_layout"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentLeft="true"/>
 
-    <include
-        layout="@layout/target_word_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+  <include
+      layout="@layout/target_word_layout"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"/>
+
+  <!-- Text view moving on the screen with the current option -->
+  <TextView
+      android:id="@+id/optionsTextView"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="optionsTextView"
+      android:layout_below="@+id/targetWordTextViewOne"
+      style="@style/TargetWord"
+      />
+
 
 </RelativeLayout>
