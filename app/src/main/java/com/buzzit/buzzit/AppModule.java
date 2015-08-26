@@ -4,6 +4,7 @@ import android.content.Context;
 import com.buzzit.buzzit.data.db.modules.DbModule;
 import com.buzzit.buzzit.data.db.modules.ServicesModule;
 import com.buzzit.buzzit.domain.modules.UseCasesModule;
+import com.buzzit.buzzit.utils.rx.modules.RxSchedulersModule;
 import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
@@ -14,8 +15,9 @@ import javax.inject.Singleton;
  * <p/>
  * Created by fred on 25.08.15.
  */
-@Module(includes = { ServicesModule.class, DbModule.class, UseCasesModule.class }, library = true)
-public class AppModule {
+@Module(includes = {
+    ServicesModule.class, DbModule.class, UseCasesModule.class, RxSchedulersModule.class
+}, library = true) public class AppModule {
   private final Context context;
 
   public AppModule(Context context) {
