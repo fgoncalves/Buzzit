@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+
+  <TextView
+      android:id="@+id/targetWordTextViewOne"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Target Word"
+      android:rotation="180"
+      style="@style/TargetWord"
+      />
+
+  <TextView
+      android:id="@+id/targetWordTextViewTwo"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      tools:text="Target Word"
+      android:layout_below="@+id/targetWordTextViewOne"
+      style="@style/TargetWord"
+
+      />
+
+</RelativeLayout>
