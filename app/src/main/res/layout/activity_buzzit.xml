@@ -54,5 +54,17 @@
       style="@style/TargetWord"
       />
 
+  <FrameLayout
+      android:id="@+id/loadingScreen"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@color/white_transparent">
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+  </FrameLayout>
 
 </RelativeLayout>
