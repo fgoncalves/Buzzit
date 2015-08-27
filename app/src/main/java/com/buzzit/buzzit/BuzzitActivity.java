@@ -6,6 +6,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.buzzit.buzzit.presentation.presenters.BuzzitMainGamePresenter;
 import com.buzzit.buzzit.presentation.views.BuzzitMainGameView;
 import com.buzzit.buzzit.presentation.views.modules.BuzzitActivityModule;
@@ -44,5 +45,29 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
 
   @Override public void showOptionalWord(String optionalWord) {
     optionalWordTextView.setText(optionalWord);
+  }
+
+  @Override public void startOptionalWordAnimation() {
+    //TODO: Animation
+  }
+
+  @Override public void stopOptionalWordAnimation() {
+    // TODO: animation
+  }
+
+  @OnClick(R.id.green_player_layout) public void onGreenPlayLayoutClick() {
+    presenter.onGreenPlayerButtonClicked();
+  }
+
+  @OnClick(R.id.yellow_player_layout) public void onYellowPlayLayoutClick() {
+    presenter.onYellowPlayerButtonClicked();
+  }
+
+  @OnClick(R.id.blue_player_layout) public void onBluePlayLayoutClick() {
+    presenter.onBluePlayerButtonClicked();
+  }
+
+  @OnClick(R.id.red_player_layout) public void onRedPlayLayoutClick() {
+    presenter.onRedPlayerButtonClicked();
   }
 }

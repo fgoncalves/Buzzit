@@ -24,6 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollection;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,6 +45,7 @@ public class BuzzitMainGamePresenterImplTest {
         Observable.just((List<Word>) new ArrayList<Word>()));
     when(sequenceRepeaterObservableCreator.repeatSequenceUntil(anyCollection(), anyInt(),
         any(Func1.class))).thenReturn(Observable.just(new Word()));
+    when(getAllWordsUseCase.get()).thenReturn(Observable.just((List<Word>) new ArrayList<Word>()));
 
     presenter = new BuzzitMainGamePresenterImpl(populateWordsStorageUseCase, getAllWordsUseCase,
         removeWordUseCase, new ImmediateToImmediateSchedulerTransformer(),
@@ -133,5 +135,86 @@ public class BuzzitMainGamePresenterImplTest {
     presenter.onCreate();
 
     verify(view).showOptionalWord(anyString());
+  }
+
+  @Test public void should_tell_view_to_start_fading_animation_for_optional_word() {
+    List<Word> words = new ArrayList<>();
+    Word word = new Word();
+    word.setId("fooid");
+    word.setTextEng("it's amazing");
+    word.setTextSpa("issa amassing");
+    words.add(word);
+
+    word = new Word();
+    word.setId("foo2");
+    word.setTextEng("Call a pizza");
+    word.setTextSpa("Call a pissa");
+    words.add(word);
+
+    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
+    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(word));
+
+    presenter.onCreate();
+
+    verify(view).startOptionalWordAnimation();
+  }
+
+  @Test public void should_tell_view_to_stop_fading_animation_for_optional_word() {
+    List<Word> words = new ArrayList<>();
+    Word word = new Word();
+    word.setId("fooid");
+    word.setTextEng("it's amazing");
+    word.setTextSpa("issa amassing");
+    words.add(word);
+
+    word = new Word();
+    word.setId("foo2");
+    word.setTextEng("Call a pizza");
+    word.setTextSpa("Call a pissa");
+    words.add(word);
+
+    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
+    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(word));
+
+    presenter.onCreate();
+
+    verify(view, atLeastOnce()).stopOptionalWordAnimation();
+  }
+
+  @Test public void should_tell_view_to_stop_fading_animation_for_optional_word_on_completed() {
+    List<Word> words = new ArrayList<>();
+    Word word = new Word();
+    word.setId("fooid");
+    word.setTextEng("it's amazing");
+    word.setTextSpa("issa amassing");
+    words.add(word);
+
+    word = new Word();
+    word.setId("foo2");
+    word.setTextEng("Call a pizza");
+    word.setTextSpa("Call a pissa");
+    words.add(word);
+
+    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
+    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.<Word>empty());
+
+    presenter.onCreate();
+
+    verify(view, atLeastOnce()).stopOptionalWordAnimation();
+  }
+
+  @Test public void should_start_new_round_on_button_clicked_and_words_match() {
+    Word targetWord = new Word();
+    targetWord.setId("fooid");
+    targetWord.setTextEng("it's amazing");
+    targetWord.setTextSpa("issa amassing");
+    List<Word> words = new ArrayList<>();
+    words.add(targetWord);
+    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
+    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(targetWord));
+    presenter.onCreate();
+    presenter.onGreenPlayerButtonClicked();
+
+    verify(getAllWordsUseCase).get();
   }
 }

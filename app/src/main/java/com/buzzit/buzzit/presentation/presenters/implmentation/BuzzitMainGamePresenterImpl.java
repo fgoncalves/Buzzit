@@ -18,6 +18,7 @@ import java.util.Random;
 import javax.inject.Inject;
 import javax.inject.Named;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Func1;
 import timber.log.Timber;
 
@@ -41,6 +42,8 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
    * The language chosen to show the target word
    */
   private String targetWordLanguage;
+  private volatile String currentDisplayedWord;
+  private Subscription optionalWordsSubscription;
 
   @Inject
   public BuzzitMainGamePresenterImpl(PopulateWordsStorageUseCase populateWordsStorageUseCase,
@@ -65,6 +68,35 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
         .subscribe(new AllWordsSubscriber());
   }
 
+  @Override public void onGreenPlayerButtonClicked() {
+    if (isCurrentTranslationCorrect()) {
+      toNextState();
+    }
+  }
+
+  @Override public void onYellowPlayerButtonClicked() {
+    if (isCurrentTranslationCorrect()) {
+      toNextState();
+    }
+  }
+
+  @Override public void onBluePlayerButtonClicked() {
+    if (isCurrentTranslationCorrect()) {
+      toNextState();
+    }
+  }
+
+  @Override public void onRedPlayerButtonClicked() {
+    if (isCurrentTranslationCorrect()) {
+      toNextState();
+    }
+  }
+
+  private boolean isCurrentTranslationCorrect() {
+    return currentDisplayedWord.equals(targetWord.getTextEng()) || currentDisplayedWord.equals(
+        targetWord.getTextSpa());
+  }
+
   /**
    * Check the current state and jump to the next one.
    */
@@ -78,37 +110,57 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
         currentGameState = GameState.START_ROUND;
         onRoundStart();
         break;
+      case START_ROUND:
+        currentGameState = GameState.END_ROUND;
+        onRoundEnd();
+        break;
+      case END_ROUND:
+        if (currentAvailableWords.isEmpty()) {
+          currentGameState = GameState.END_GAME;
+          toNextState();
+          break;
+        }
+        currentGameState = GameState.START_ROUND;
+        chooseTargetWord();
+        onRoundStart();
+        break;
+      case END_GAME:
+        currentGameState = GameState.UNKNOWN;
+        onGameEnd();
     }
+  }
+
+  /**
+   * Called when the game is over
+   */
+  private void onGameEnd() {
+    // TODO: Cleat pending subscriptions
+  }
+
+  /**
+   * Called when the round is over
+   */
+  private void onRoundEnd() {
+    optionalWordsSubscription.unsubscribe();
+    getAllWordsUseCase.get()
+        .compose(schedulerTransformer.<List<Word>>applySchedulers())
+        .subscribe(new AllWordsSubscriber());
   }
 
   /**
    * Called when the round started
    */
   private void onRoundStart() {
-    sequenceRepeaterObservableCreator.repeatSequenceUntil(currentAvailableWords,
-        BuildConfig.TIME_FOR_EACH_OPTIONAL, new Func1<Word, Boolean>() {
-          @Override public Boolean call(Word word) {
-            return currentGameState == GameState.END_ROUND
-                || currentGameState == GameState.END_GAME;
-          }
-        }).compose(schedulerTransformer.<Word>applySchedulers()).subscribe(new Subscriber<Word>() {
-      @Override public void onCompleted() {
-
-      }
-
-      @Override public void onError(Throwable e) {
-        view.showGenericError();
-        Timber.d(e, "Failed to show optional word");
-      }
-
-      @Override public void onNext(Word word) {
-        if (targetWordLanguage.equals(ENGLISH)) {
-          view.showOptionalWord(word.getTextSpa());
-        } else {
-          view.showOptionalWord(word.getTextEng());
-        }
-      }
-    });
+    optionalWordsSubscription =
+        sequenceRepeaterObservableCreator.repeatSequenceUntil(currentAvailableWords,
+            BuildConfig.TIME_FOR_EACH_OPTIONAL, new Func1<Word, Boolean>() {
+              @Override public Boolean call(Word word) {
+                return currentGameState == GameState.END_ROUND
+                    || currentGameState == GameState.END_GAME;
+              }
+            })
+            .compose(schedulerTransformer.<Word>applySchedulers())
+            .subscribe(new OptionalWordSubscriber());
   }
 
   /**
@@ -116,6 +168,7 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
    */
   private void onGameStart() {
     chooseTargetWord();
+    toNextState();
   }
 
   /**
@@ -135,7 +188,6 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
     removeWordUseCase.remove(targetWord)
         .compose(schedulerTransformer.applySchedulers())
         .subscribe();
-    toNextState();
   }
 
   private enum GameState {
@@ -163,6 +215,32 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
 
     @Override public void onNext(List<Word> words) {
       currentAvailableWords = new ArrayList<>(words);
+    }
+  }
+
+  private class OptionalWordSubscriber extends Subscriber<Word> {
+    @Override public void onCompleted() {
+      view.stopOptionalWordAnimation();
+    }
+
+    @Override public void onError(Throwable e) {
+      view.showGenericError();
+      Timber.d(e, "Failed to show optional word");
+    }
+
+    @Override public void onNext(Word word) {
+      view.stopOptionalWordAnimation();
+      view.startOptionalWordAnimation();
+      if (RANDOM.nextDouble() <= 0.25 || currentAvailableWords.isEmpty()) {
+        word = targetWord;
+      }
+      if (targetWordLanguage.equals(ENGLISH)) {
+        view.showOptionalWord(word.getTextSpa());
+        currentDisplayedWord = word.getTextSpa();
+      } else {
+        view.showOptionalWord(word.getTextEng());
+        currentDisplayedWord = word.getTextEng();
+      }
     }
   }
 }

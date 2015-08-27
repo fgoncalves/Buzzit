@@ -27,4 +27,8 @@ public interface BuzzitMainGameView {
    * @param optionalWord A possible translation for the target word
    */
   void showOptionalWord(String optionalWord);
+
+  void startOptionalWordAnimation();
+
+  void stopOptionalWordAnimation();
 }
