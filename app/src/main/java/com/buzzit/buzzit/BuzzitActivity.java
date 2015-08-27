@@ -2,6 +2,8 @@ package com.buzzit.buzzit;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.buzzit.buzzit.presentation.presenters.BuzzitMainGamePresenter;
@@ -13,6 +15,7 @@ import javax.inject.Inject;
 
 public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGameView {
   @Bind(R.id.loadingScreen) View loadingScreen;
+  @Bind(R.id.optionsTextView) TextView optionalWordTextView;
 
   @Inject BuzzitMainGamePresenter presenter;
 
@@ -33,5 +36,13 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
 
   @Override public void hideLoading() {
     loadingScreen.setVisibility(View.GONE);
+  }
+
+  @Override public void showGenericError() {
+    Toast.makeText(this, R.string.generic_error, Toast.LENGTH_SHORT).show();
+  }
+
+  @Override public void showOptionalWord(String optionalWord) {
+    optionalWordTextView.setText(optionalWord);
   }
 }

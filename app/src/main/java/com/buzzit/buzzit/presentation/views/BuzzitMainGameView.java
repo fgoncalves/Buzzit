@@ -15,4 +15,16 @@ public interface BuzzitMainGameView {
    * Tell the view to hide the loading indicator
    */
   void hideLoading();
+
+  /**
+   * Something unrecoverable happened. Let the user know.
+   */
+  void showGenericError();
+
+  /**
+   * Show this text as a possible translation
+   *
+   * @param optionalWord A possible translation for the target word
+   */
+  void showOptionalWord(String optionalWord);
 }

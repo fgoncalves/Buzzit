@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">Buzzit</string>
+  <string name="generic_error">Something unexpected happen</string>
 </resources>
