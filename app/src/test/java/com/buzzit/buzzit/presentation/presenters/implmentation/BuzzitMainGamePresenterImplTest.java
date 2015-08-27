@@ -5,6 +5,7 @@ import com.buzzit.buzzit.domain.usecases.GetAllWordsUseCase;
 import com.buzzit.buzzit.domain.usecases.PopulateWordsStorageUseCase;
 import com.buzzit.buzzit.domain.usecases.RemoveWordUseCase;
 import com.buzzit.buzzit.presentation.views.BuzzitMainGameView;
+import com.buzzit.buzzit.testutils.ImmediateToImmediateSchedulerTransformer;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -31,7 +32,7 @@ public class BuzzitMainGamePresenterImplTest {
         Observable.just((List<Word>) new ArrayList<Word>()));
 
     presenter = new BuzzitMainGamePresenterImpl(populateWordsStorageUseCase, getAllWordsUseCase,
-        removeWordUseCase, view);
+        removeWordUseCase, new ImmediateToImmediateSchedulerTransformer(), view);
   }
 
   @Test public void should_populate_words_on_onCreate() {

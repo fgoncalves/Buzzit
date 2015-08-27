@@ -7,6 +7,7 @@ import com.buzzit.buzzit.domain.modules.UseCasesModule;
 import com.buzzit.buzzit.utils.rx.modules.RxSchedulersModule;
 import dagger.Module;
 import dagger.Provides;
+import de.greenrobot.event.EventBus;
 import javax.inject.Singleton;
 
 /**
@@ -26,5 +27,9 @@ import javax.inject.Singleton;
 
   @Provides @Singleton public Context providesContext() {
     return context;
+  }
+
+  @Provides @Singleton public EventBus providesEventBus() {
+    return EventBus.getDefault();
   }
 }
