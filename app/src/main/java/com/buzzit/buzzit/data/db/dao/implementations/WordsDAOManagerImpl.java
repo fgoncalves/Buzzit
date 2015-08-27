@@ -6,6 +6,7 @@ import com.buzzit.buzzit.data.db.dao.WordsDAOManager;
 import com.buzzit.buzzit.data.models.Word;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import java.sql.SQLException;
 import javax.inject.Inject;
 
 public class WordsDAOManagerImpl implements WordsDAOManager {
@@ -15,7 +16,7 @@ public class WordsDAOManagerImpl implements WordsDAOManager {
     this.context = context;
   }
 
-  @Override public Dao<Word, String> getDAO() {
+  @Override public Dao<Word, String> getDAO() throws SQLException {
     return OpenHelperManager.getHelper(context, DatabaseHelper.class).getWordDao();
   }
 

@@ -2,6 +2,7 @@ package com.buzzit.buzzit.data.db.dao;
 
 import com.buzzit.buzzit.data.models.Word;
 import com.j256.ormlite.dao.Dao;
+import java.sql.SQLException;
 
 /**
  * Wrap the DAO operations inside an interface for a specific model. This helps us with opening and
@@ -17,7 +18,7 @@ public interface WordsDAOManager {
    *
    * @return A run time DAO created specifically for the model {@link Word}
    */
-  Dao<Word, String> getDAO();
+  Dao<Word, String> getDAO() throws SQLException;
 
   /**
    * Call this method when you're done with the database to avoid memory leaks

@@ -12,7 +12,7 @@ import com.buzzit.buzzit.BuzzitApplication;
 import com.buzzit.buzzit.R;
 import com.buzzit.buzzit.presentation.presenters.TargetWordPresenter;
 import com.buzzit.buzzit.presentation.views.TargetWordView;
-import com.buzzit.buzzit.presentation.views.TargetWordViewModule;
+import com.buzzit.buzzit.presentation.views.modules.TargetWordViewModule;
 import javax.inject.Inject;
 
 public class TargetWordViewImpl extends RelativeLayout implements TargetWordView {
@@ -37,7 +37,7 @@ public class TargetWordViewImpl extends RelativeLayout implements TargetWordView
     super.onFinishInflate();
     ButterKnife.bind(this);
     ((BuzzitApplication) ((Activity) getContext()).getApplication()).getScopedGraph(
-        new TargetWordViewModule(this));
+        new TargetWordViewModule(this)).inject(this);
   }
 
   @Override protected void onAttachedToWindow() {

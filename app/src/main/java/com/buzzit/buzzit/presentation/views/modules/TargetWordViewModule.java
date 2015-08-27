@@ -1,8 +1,9 @@
-package com.buzzit.buzzit.presentation.views;
+package com.buzzit.buzzit.presentation.views.modules;
 
 import com.buzzit.buzzit.AppModule;
 import com.buzzit.buzzit.presentation.presenters.TargetWordPresenter;
 import com.buzzit.buzzit.presentation.presenters.implmentation.TargetWordPresenterImpl;
+import com.buzzit.buzzit.presentation.views.TargetWordView;
 import com.buzzit.buzzit.presentation.views.implementation.TargetWordViewImpl;
 import dagger.Module;
 import dagger.Provides;

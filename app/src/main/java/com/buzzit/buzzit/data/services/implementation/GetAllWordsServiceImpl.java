@@ -20,8 +20,8 @@ public class GetAllWordsServiceImpl implements GetAllWordsService {
   @Override public Observable<List<Word>> get() {
     return Observable.create(new Observable.OnSubscribe<List<Word>>() {
       @Override public void call(Subscriber<? super List<Word>> subscriber) {
-        Dao<Word, String> dao = wordsDAOManager.getDAO();
         try {
+          Dao<Word, String> dao = wordsDAOManager.getDAO();
           subscriber.onNext(dao.queryForAll());
           subscriber.onCompleted();
         } catch (SQLException e) {

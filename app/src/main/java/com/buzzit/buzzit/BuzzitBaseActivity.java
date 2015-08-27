@@ -1,7 +1,6 @@
 package com.buzzit.buzzit;
 
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import dagger.ObjectGraph;
 import java.util.List;
@@ -17,8 +16,8 @@ import java.util.List;
 public abstract class BuzzitBaseActivity extends AppCompatActivity {
   protected ObjectGraph scopedGraph;
 
-  @Override public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-    super.onCreate(savedInstanceState, persistentState);
+  @Override protected void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
     scopedGraph = ((BuzzitApplication) getApplication()).getScopedGraph(getModules().toArray());
     scopedGraph.inject(this);
   }

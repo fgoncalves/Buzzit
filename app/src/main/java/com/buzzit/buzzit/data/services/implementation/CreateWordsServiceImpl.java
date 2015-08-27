@@ -25,8 +25,8 @@ public class CreateWordsServiceImpl implements CreateWordsService {
           return;
         }
 
-        Dao<Word, String> dao = wordsDAOManager.getDAO();
         try {
+          Dao<Word, String> dao = wordsDAOManager.getDAO();
           for (Word word : words)
             dao.create(word);
           // emit the words already with the id set

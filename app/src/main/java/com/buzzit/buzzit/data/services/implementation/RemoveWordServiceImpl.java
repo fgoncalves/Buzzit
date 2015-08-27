@@ -19,8 +19,8 @@ public class RemoveWordServiceImpl implements RemoveWordService {
   @Override public Observable<Word> remove(final Word word) {
     return Observable.create(new Observable.OnSubscribe<Word>() {
       @Override public void call(Subscriber<? super Word> subscriber) {
-        Dao<Word, String> dao = wordsDAOManager.getDAO();
         try {
+          Dao<Word, String> dao = wordsDAOManager.getDAO();
           if (dao.delete(word) != 0) subscriber.onNext(word);
           subscriber.onCompleted();
         } catch (SQLException e) {

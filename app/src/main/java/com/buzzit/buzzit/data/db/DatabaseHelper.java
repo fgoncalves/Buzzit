@@ -51,8 +51,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     wordsDAO = null;
   }
 
-  public Dao<Word, String> getWordDao() {
-    if (wordsDAO == null) wordsDAO = getRuntimeExceptionDao(Word.class);
+  public Dao<Word, String> getWordDao() throws SQLException {
+    if (wordsDAO == null) wordsDAO = getDao(Word.class);
     return wordsDAO;
   }
 }
