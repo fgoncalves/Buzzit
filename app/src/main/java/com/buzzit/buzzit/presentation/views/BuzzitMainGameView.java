@@ -1,5 +1,7 @@
 package com.buzzit.buzzit.presentation.views;
 
+import android.support.annotation.ColorRes;
+
 /**
  * View interface for the main view of the game.
  * <p/>
@@ -31,4 +33,11 @@ public interface BuzzitMainGameView {
   void startOptionalWordAnimation();
 
   void stopOptionalWordAnimation();
+
+  /**
+   * Blink the background from black to the supplied color
+   *
+   * @param color The color to blink
+   */
+  void blink(@ColorRes int color);
 }

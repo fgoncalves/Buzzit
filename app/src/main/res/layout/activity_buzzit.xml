@@ -67,4 +67,12 @@
 
   </FrameLayout>
 
+  <FrameLayout
+      android:id="@+id/blinkingPane"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="gone">
+
+  </FrameLayout>
+
 </RelativeLayout>

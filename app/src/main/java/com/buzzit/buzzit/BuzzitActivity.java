@@ -2,6 +2,7 @@ package com.buzzit.buzzit;
 
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
 import android.view.Display;
 import android.view.View;
 import android.view.animation.Animation;
@@ -21,10 +22,12 @@ import javax.inject.Inject;
 public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGameView {
   @Bind(R.id.loadingScreen) View loadingScreen;
   @Bind(R.id.optionsTextView) TextView optionalWordTextView;
+  @Bind(R.id.blinkingPane) View blinkingPane;
 
   @Inject BuzzitMainGamePresenter presenter;
 
   private OptionalWordAnimation optionalWordAnimation;
+  private BlinkingAnimation blinkingAnimation;
   private int screenWith;
   private int screenHeight;
 
@@ -42,6 +45,9 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
 
     optionalWordTextView.setX(100);
     optionalWordTextView.setY(100);
+
+    // Initialize blinking animation
+    blinkingAnimation = new BlinkingAnimation();
 
     presenter.onCreate();
   }
@@ -75,6 +81,25 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
 
   @Override public void stopOptionalWordAnimation() {
     optionalWordTextView.clearAnimation();
+  }
+
+  @Override public void blink(@ColorRes int color) {
+    blinkingAnimation.setColor(color);
+    blinkingAnimation.setRepeatCount(3);
+    blinkingAnimation.setDuration(500);
+    blinkingAnimation.setAnimationListener(new Animation.AnimationListener() {
+      @Override public void onAnimationStart(Animation animation) {
+        blinkingPane.setVisibility(View.VISIBLE);
+      }
+
+      @Override public void onAnimationEnd(Animation animation) {
+        blinkingPane.setVisibility(View.GONE);
+      }
+
+      @Override public void onAnimationRepeat(Animation animation) {
+      }
+    });
+    blinkingPane.startAnimation(blinkingAnimation);
   }
 
   @OnClick(R.id.green_player_layout) public void onGreenPlayLayoutClick() {
@@ -125,6 +150,24 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
 
       optionalWordTextView.setX(x + xDirection * 1);
       optionalWordTextView.setY(y + yDirection * 1);
+    }
+  }
+
+  private class BlinkingAnimation extends Animation {
+    private int color = -1;
+
+    public void setColor(int color) {
+      this.color = color;
+    }
+
+    @Override protected void applyTransformation(float interpolatedTime, Transformation t) {
+      if (color == -1) throw new RuntimeException("Color must be set before running animation");
+
+      if (interpolatedTime > 0.5) {
+        blinkingPane.setBackgroundColor(getResources().getColor(R.color.black));
+      } else {
+        blinkingPane.setBackgroundColor(getResources().getColor(color));
+      }
     }
   }
 }

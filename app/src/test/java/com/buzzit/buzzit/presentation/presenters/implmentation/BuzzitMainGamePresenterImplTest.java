@@ -1,5 +1,6 @@
 package com.buzzit.buzzit.presentation.presenters.implmentation;
 
+import com.buzzit.buzzit.R;
 import com.buzzit.buzzit.data.models.Word;
 import com.buzzit.buzzit.domain.usecases.GetAllWordsUseCase;
 import com.buzzit.buzzit.domain.usecases.PopulateWordsStorageUseCase;
@@ -189,5 +190,24 @@ public class BuzzitMainGamePresenterImplTest {
     presenter.onGreenPlayerButtonClicked();
 
     verify(getAllWordsUseCase).get();
+  }
+
+
+
+  @Test public void should_tell_view_to_blink_accordingly_to_the_winner() {
+    List<Word> words = new ArrayList<>();
+    Word word = new Word();
+    word.setId("fooid");
+    word.setTextEng("it's amazing");
+    word.setTextSpa("issa amassing");
+    words.add(word);
+
+    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
+    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(word));
+
+    presenter.onCreate();
+    presenter.onGreenPlayerButtonClicked();
+
+    verify(view).blink(R.color.green);
   }
 }

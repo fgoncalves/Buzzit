@@ -1,6 +1,7 @@
 package com.buzzit.buzzit.presentation.presenters.implmentation;
 
 import com.buzzit.buzzit.BuildConfig;
+import com.buzzit.buzzit.R;
 import com.buzzit.buzzit.data.models.Word;
 import com.buzzit.buzzit.domain.usecases.GetAllWordsUseCase;
 import com.buzzit.buzzit.domain.usecases.PopulateWordsStorageUseCase;
@@ -70,24 +71,28 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
 
   @Override public void onGreenPlayerButtonClicked() {
     if (isCurrentTranslationCorrect()) {
+      view.blink(R.color.green);
       toNextState();
     }
   }
 
   @Override public void onYellowPlayerButtonClicked() {
     if (isCurrentTranslationCorrect()) {
+      view.blink(R.color.yellow);
       toNextState();
     }
   }
 
   @Override public void onBluePlayerButtonClicked() {
     if (isCurrentTranslationCorrect()) {
+      view.blink(R.color.blue);
       toNextState();
     }
   }
 
   @Override public void onRedPlayerButtonClicked() {
     if (isCurrentTranslationCorrect()) {
+      view.blink(R.color.red);
       toNextState();
     }
   }
