@@ -100,6 +100,9 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
     }
   }
 
+  /**
+   * Is the current optional word equal to the target word?
+   */
   private boolean isCurrentTranslationCorrect() {
     return currentDisplayedWord.equals(targetWord.getTextEng()) || currentDisplayedWord.equals(
         targetWord.getTextSpa());
@@ -238,6 +241,8 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
     }
 
     @Override public void onNext(Word word) {
+      Timber.d("Got word " + word + " and this is the subscriber " + this);
+
       if (RANDOM.nextDouble() <= 0.25 || currentAvailableWords.isEmpty()) {
         word = targetWord;
       }

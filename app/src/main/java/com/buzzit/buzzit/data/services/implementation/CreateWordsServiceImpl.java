@@ -30,7 +30,7 @@ public class CreateWordsServiceImpl implements CreateWordsService {
           for (Word word : words)
             dao.create(word);
           // emit the words already with the id set
-          subscriber.onNext(words);
+          subscriber.onNext(dao.queryForAll());
           subscriber.onCompleted();
         } catch (SQLException e) {
           subscriber.onError(e);

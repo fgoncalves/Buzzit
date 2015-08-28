@@ -53,9 +53,17 @@ public class CreateWordsServiceImplTest {
 
   @Test public void should_emit_saved_words() throws SQLException {
     List<Word> words = new ArrayList<>();
-    words.add(new Word());
-    words.add(new Word());
-    words.add(new Word());
+    Word word = new Word();
+    word.setId(1);
+    words.add(word);
+    word = new Word();
+    word.setId(2);
+    words.add(word);
+    word = new Word();
+    word.setId(3);
+    words.add(word);
+    when(wordsDao.queryForAll()).thenReturn(words);
+
     createWordsService.create(words).subscribe(testSubscriber);
 
     testSubscriber.assertCompleted();

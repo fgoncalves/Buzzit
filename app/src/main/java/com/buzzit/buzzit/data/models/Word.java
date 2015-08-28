@@ -6,7 +6,7 @@ import com.j256.ormlite.field.DatabaseField;
 
 public class Word {
 
-  @DatabaseField(id = true) private String id;
+  @DatabaseField(generatedId = true) private Integer id;
   @SerializedName("text_eng") @Expose @DatabaseField private String textEng;
   @SerializedName("text_spa") @Expose @DatabaseField private String textSpa;
 
@@ -26,11 +26,11 @@ public class Word {
     this.textSpa = textSpa;
   }
 
-  public String getId() {
+  public Integer getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(Integer id) {
     this.id = id;
   }
 
@@ -40,10 +40,10 @@ public class Word {
 
     Word word = (Word) o;
 
-    return id.equals(word.id);
+    return !(id != null ? !id.equals(word.id) : word.id != null);
   }
 
   @Override public int hashCode() {
-    return id.hashCode();
+    return id != null ? id.hashCode() : 0;
   }
 }

@@ -123,7 +123,7 @@ public class BuzzitMainGamePresenterImplTest {
 
   @Test public void should_remove_target_word() {
     Word targetWord = new Word();
-    targetWord.setId("fooid");
+    targetWord.setId(1);
     targetWord.setTextEng("it's amazing");
     targetWord.setTextSpa("issa amassing");
     List<Word> words = new ArrayList<>();
@@ -137,13 +137,13 @@ public class BuzzitMainGamePresenterImplTest {
   @Test public void should_tell_view_to_show_optional_word() {
     List<Word> words = new ArrayList<>();
     Word word = new Word();
-    word.setId("fooid");
+    word.setId(1);
     word.setTextEng("it's amazing");
     word.setTextSpa("issa amassing");
     words.add(word);
 
     word = new Word();
-    word.setId("foo2");
+    word.setId(2);
     word.setTextEng("Call a pizza");
     word.setTextSpa("Call a pissa");
     words.add(word);
@@ -159,13 +159,13 @@ public class BuzzitMainGamePresenterImplTest {
   @Test public void should_tell_view_to_start_fading_animation_for_optional_word() {
     List<Word> words = new ArrayList<>();
     Word word = new Word();
-    word.setId("fooid");
+    word.setId(1);
     word.setTextEng("it's amazing");
     word.setTextSpa("issa amassing");
     words.add(word);
 
     word = new Word();
-    word.setId("foo2");
+    word.setId(2);
     word.setTextEng("Call a pizza");
     word.setTextSpa("Call a pissa");
     words.add(word);
@@ -181,7 +181,7 @@ public class BuzzitMainGamePresenterImplTest {
   @Test public void should_tell_view_to_stop_fading_animation_for_optional_word() {
     List<Word> words = new ArrayList<>();
     Word word = new Word();
-    word.setId("fooid");
+    word.setId(1);
     word.setTextEng("it's amazing");
     word.setTextSpa("issa amassing");
     words.add(word);
@@ -197,7 +197,7 @@ public class BuzzitMainGamePresenterImplTest {
 
   @Test public void should_start_new_round_on_button_clicked_and_words_match() {
     Word targetWord = new Word();
-    targetWord.setId("fooid");
+    targetWord.setId(1);
     targetWord.setTextEng("it's amazing");
     targetWord.setTextSpa("issa amassing");
     List<Word> words = new ArrayList<>();
@@ -215,7 +215,7 @@ public class BuzzitMainGamePresenterImplTest {
   @Test public void should_tell_view_to_blink_accordingly_to_the_winner() {
     List<Word> words = new ArrayList<>();
     Word word = new Word();
-    word.setId("fooid");
+    word.setId(1);
     word.setTextEng("it's amazing");
     word.setTextSpa("issa amassing");
     words.add(word);
