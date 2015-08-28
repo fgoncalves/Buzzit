@@ -167,40 +167,13 @@ public class BuzzitMainGamePresenterImplTest {
     word.setTextSpa("issa amassing");
     words.add(word);
 
-    word = new Word();
-    word.setId("foo2");
-    word.setTextEng("Call a pizza");
-    word.setTextSpa("Call a pissa");
-    words.add(word);
-
     when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
     when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(word));
 
     presenter.onCreate();
+    presenter.onGreenPlayerButtonClicked();
 
-    verify(view, atLeastOnce()).stopOptionalWordAnimation();
-  }
-
-  @Test public void should_tell_view_to_stop_fading_animation_for_optional_word_on_completed() {
-    List<Word> words = new ArrayList<>();
-    Word word = new Word();
-    word.setId("fooid");
-    word.setTextEng("it's amazing");
-    word.setTextSpa("issa amassing");
-    words.add(word);
-
-    word = new Word();
-    word.setId("foo2");
-    word.setTextEng("Call a pizza");
-    word.setTextSpa("Call a pissa");
-    words.add(word);
-
-    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
-    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.<Word>empty());
-
-    presenter.onCreate();
-
-    verify(view, atLeastOnce()).stopOptionalWordAnimation();
+    verify(view).stopOptionalWordAnimation();
   }
 
   @Test public void should_start_new_round_on_button_clicked_and_words_match() {

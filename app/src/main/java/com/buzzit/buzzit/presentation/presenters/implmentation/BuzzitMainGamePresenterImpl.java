@@ -135,6 +135,7 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
    */
   private void onGameEnd() {
     // TODO: Cleat pending subscriptions
+    view.stopOptionalWordAnimation();
   }
 
   /**
@@ -169,6 +170,7 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
   private void onGameStart() {
     chooseTargetWord();
     toNextState();
+    view.startOptionalWordAnimation();
   }
 
   /**
@@ -220,7 +222,6 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
 
   private class OptionalWordSubscriber extends Subscriber<Word> {
     @Override public void onCompleted() {
-      view.stopOptionalWordAnimation();
     }
 
     @Override public void onError(Throwable e) {
@@ -229,8 +230,6 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
     }
 
     @Override public void onNext(Word word) {
-      view.stopOptionalWordAnimation();
-      view.startOptionalWordAnimation();
       if (RANDOM.nextDouble() <= 0.25 || currentAvailableWords.isEmpty()) {
         word = targetWord;
       }
