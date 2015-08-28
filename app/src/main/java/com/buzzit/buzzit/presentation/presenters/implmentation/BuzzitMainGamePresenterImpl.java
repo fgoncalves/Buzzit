@@ -64,6 +64,9 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
 
   @Override public void onCreate() {
     view.displayLoading();
+    view.createBlinkingAnimation();
+    view.positionOptionalView();
+    view.createOptionalTextAnimation();
     populateWordsStorageUseCase.populate()
         .compose(schedulerTransformer.<List<Word>>applySchedulers())
         .subscribe(new AllWordsSubscriber());

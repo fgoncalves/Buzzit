@@ -40,4 +40,10 @@ public interface BuzzitMainGameView {
    * @param color The color to blink
    */
   void blink(@ColorRes int color);
+
+  void createBlinkingAnimation();
+
+  void positionOptionalView();
+
+  void createOptionalTextAnimation();
 }

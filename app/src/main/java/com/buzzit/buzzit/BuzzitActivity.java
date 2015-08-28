@@ -36,19 +36,6 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
     setContentView(R.layout.activity_buzzit);
     ButterKnife.bind(this);
 
-    // Get screen measurements for the animation
-    Display display = getWindowManager().getDefaultDisplay();
-    Point size = new Point();
-    display.getSize(size);
-    screenWith = size.x;
-    screenHeight = size.y;
-
-    optionalWordTextView.setX(100);
-    optionalWordTextView.setY(100);
-
-    // Initialize blinking animation
-    blinkingAnimation = new BlinkingAnimation();
-
     presenter.onCreate();
   }
 
@@ -73,9 +60,6 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
   }
 
   @Override public void startOptionalWordAnimation() {
-    optionalWordAnimation = new OptionalWordAnimation();
-    optionalWordAnimation.setRepeatCount(Animation.INFINITE);
-    optionalWordAnimation.setDuration(BuildConfig.TIME_FOR_EACH_OPTIONAL * 1000);
     optionalWordTextView.startAnimation(optionalWordAnimation);
   }
 
@@ -102,6 +86,27 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
     blinkingPane.startAnimation(blinkingAnimation);
   }
 
+  @Override public void createBlinkingAnimation() {
+    blinkingAnimation = new BlinkingAnimation();
+  }
+
+  @Override public void positionOptionalView() {
+    optionalWordTextView.setX(100);
+    optionalWordTextView.setY(100);
+  }
+
+  @Override public void createOptionalTextAnimation() {
+    Display display = getWindowManager().getDefaultDisplay();
+    Point size = new Point();
+    display.getSize(size);
+    screenWith = size.x;
+    screenHeight = size.y;
+
+    optionalWordAnimation = new OptionalWordAnimation();
+    optionalWordAnimation.setRepeatCount(Animation.INFINITE);
+    optionalWordAnimation.setDuration(BuildConfig.TIME_FOR_EACH_OPTIONAL * 1000);
+  }
+
   @OnClick(R.id.green_player_layout) public void onGreenPlayLayoutClick() {
     presenter.onGreenPlayerButtonClicked();
   }
@@ -118,6 +123,10 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
     presenter.onRedPlayerButtonClicked();
   }
 
+  /**
+   * This animation will fade in and fade out the optional text view and will keep it moving around
+   * within certain bounds.
+   */
   private class OptionalWordAnimation extends Animation {
     private int xDirection = 1;
     private int yDirection = 1;
@@ -153,6 +162,10 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
     }
   }
 
+  /**
+   * A blinking animation that alternates the color of the blinking pane from black to the players
+   * color.
+   */
   private class BlinkingAnimation extends Animation {
     private int color = -1;
 

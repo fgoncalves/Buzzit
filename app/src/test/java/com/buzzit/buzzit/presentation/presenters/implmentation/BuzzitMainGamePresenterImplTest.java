@@ -71,6 +71,24 @@ public class BuzzitMainGamePresenterImplTest {
     verify(view).hideLoading();
   }
 
+  @Test public void should_tell_view_to_create_blinking_animation() {
+    presenter.onCreate();
+
+    verify(view).createBlinkingAnimation();
+  }
+
+  @Test public void should_tell_view_to_position_optional_text_view() {
+    presenter.onCreate();
+
+    verify(view).positionOptionalView();
+  }
+
+  @Test public void should_tell_view_to_create_optional_text_moving_animation() {
+    presenter.onCreate();
+
+    verify(view).createOptionalTextAnimation();
+  }
+
   @Test public void should_tell_view_to_hide_loading_indicator_when_an_error_happens_populating() {
     when(populateWordsStorageUseCase.populate()).thenReturn(
         Observable.<List<Word>>error(new RuntimeException()));
