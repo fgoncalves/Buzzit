@@ -1,6 +1,6 @@
 # Buzzit
 
-## How does the game work
+## How does the game work?
 
 The game consists of 4 players, each with a button and a color assigned. These are green, yellow,
 blue and red. The buttons are distributed across each corner of the device and have a number in
@@ -23,7 +23,101 @@ incremented by 1. In case the player is wrong, then nothing happens.
 
 The game ends when all the words are used and the player with the highest score wins.
 
+## How can I install it?
+
+You'll notice the app has 2 flavours - ``production`` and ``mock``. To run the real app you should
+choose the production flavour, i.e., ``installProductionRelease``. Further in this document it's
+explained why this separation.
+
 ## Architecture
+
+The overview of the architecture is depicted by the following layered architecture:
+
+![Overview](/imgs/overview.png?raw=true "Architecture Overview")
+
+- The data layer is responsible for retrieving, creating, deleting and updating the data in the
+storage. The storage is implemented in the data layer and independent from the other layers. This
+makes it possible to easily replace the storage, i.e., from local to a cloud storage.
+
+- The domain layer is responsible for all the business logic related with the application. It
+communicates with the data layer by means of services defined in the data layer and offers use
+cases to the presentation layer.
+
+- The presentation layer interacts with the domain layer using it's use cases and is responsible for
+the entire UI
+
+The next sections describe each layer in more detail.
+
+### Data
+
+The data layer is depicted by the following architecture:
+
+![Data](/imgs/data.png?raw=true "Data Architecture")
+
+This layer has simply some services that implement the basic functionality of interacting with the
+data. The storage can be any kind of storage, just needs to support the operations defined by the
+services
+
+### Domain
+
+The domain layer is depicted by the following architecture:
+
+![Domain](/imgs/domain.png?raw=true "Domain Architecture")
+
+The domain layer basically consists of use cases that interact with services. The use cases are
+a kind of higher level services. As an example consider the case where you would try to guarantee
+a certain sorting of the data to the presentation layer. This sorting should be guaranteed by the
+domain layer. The data layer should only be concerned with retrieving the data. All the business
+logic should be in the domain layer
+
+### Presentation
+
+The presentation layer is depicted by the following architecture:
+
+![Presentation](/imgs/presentation.png?raw=true "Presentation Architecture")
+
+In this architecture, the presenters communicate with the domain layer by means of the use cases
+exposed by said layer. They retrieve the data and tell the view to show it. The view is a
+dumb object that simply shows what the presenter tells it to show. The presenters can communicate
+between themselves using the event bus.
+
+### Android specific
+
+A closer look to the project reveals a ``production`` and ``mock`` flavours. I chose to separate these
+because having a layer architecture is very convenient for testing as well. The flavour ``mock``
+can easily mock the domain layer by returning mock data to the presentation layer. This flavour
+can then be used to test the UI isolating it from the domain and data layer. Just making sure the
+UI functions correctly.
+
+One can then later on use the production flavour for end to end tests and obviously for the real
+application.
+
+## Tools & libraries
+
+Libraries for the application code:
+
+ - Dagger 1 - For dependency injection. It's a library I'm comfortable with. I didn't go with
+ dagger 2 because at the time of writing this app and to my best knowledge it's still a bit unstable
+ - ORMlite - I just needed a simple thing that had the DAO pattern
+ - Butterknife - Just to remove boiler plate code
+ - Timber - I personally believe that timber brings sense to the android logging
+ - Gson - Create the POJOs from the json
+ - Rx Android - The application has quite some lengthy operations that shouldn't be in the UI thread
+ plus the main mechanics of the game fit really well in the event paradigm offered by Rx.
+ - EventBus 2 - Easier communication between entities in the app. I chose the green robot variant
+ because it's an implementation I'm comfortable with. I didn't go with EventBus 3 because so far
+ I'm not very familiar with the api
+
+Libraries for testing:
+
+ - Junit 4 - Since the support for Junit 4 was introduced and one can run unit tests very fast, TDD
+ became for me one of the most crucial points when developing my apps.
+ - Mockito - Just makes mocking much easier
+ - Assertj - Simply because I find the assertj asserts much more expressive, both in code and error
+ output.
+
+As for tools I used gradleplease.appspot.com for most of the libraries. I used jsonschema2pojo.org,
+someone once said "I'm too old to write POJOs myself". I did it mainly to speed up the process.
 
 ## Decisions made due to limit amount of time
 
@@ -31,7 +125,7 @@ From beginning it was clear that the amount of time allotted for the project wou
 to come up with a full fledged application. I decided to focus more in the architecture aspect
 of the app and not so much in the design and game mechanics, because I believe it allows to build
 a really scalable and extensible app. I believe that making the design and game mechanics better
-wis easier when the architecture of the app is well divided and clear responsibilities are assigned
+is easier when the architecture of the app is well divided and clear responsibilities are assigned
 to each layer. That said, these were the decisions I took from start:
 
  - Ending the game when all the words are used instead of making rounds of specific words - This
@@ -48,7 +142,7 @@ to each layer. That said, these were the decisions I took from start:
  separate them, but this again meant making sure all the translations are in place.
  - Simply because of time restrictions, the measurements for each player button are hardcoded as
   well as the bounding box for the floating word. Making this adapt to different screens turned out
-  to be a bit more complicated that expected. This was a decision taken while developing the app
+  to be a bit more complicated than expected. This was a decision taken while developing the app
   and not during planning.
  - The application was built to support 2 and only 2 languages. This made the whole design and
  implementation much simpler.
@@ -79,18 +173,56 @@ to each layer. That said, these were the decisions I took from start:
  treatment is given to the error. The error is simply ignored. The word will be shown again sometime
  in the future. This might not be desirable, but at the time didn't really sound like it would be
  of a big impact to the game purpose.
+ - Usually this kind of application would get it's data from the cloud, meaning the database of
+ words would be much bigger. In this case the service in the data layer would probably be a bit
+ more complicated and would most probably support some kind of pagination where you could retrieve
+ chunks of data instead of the whole thing. Since this is a simpler project I decided to not
+ implement any pagination and retrieve the entire data. This saved me time and complexity.
+ - During the project development only some of the classes were unit tested. I decided to only
+ unit test those that have heavy logic in it. Simple use cases that just call a method from another
+ class were not tested. I usually do this during my projects, because first they're quite simple
+ and don't need too much unit testing and afterwards if you do test them they can become extra
+ maintenance.
+ - I also decided to build the ``com.buzzit.buzzit.domain.usecasses.implementation.PopulateWordsStorageUseCaseImpl``
+ in a way that would ease the development and not bother too much with testing since in a normal
+ application this use case would usually not exist.
+ - I inject the entire application with the application context rather than an activity's context.
+ This served my needs and I didn't need to change it. I decided to keep it. Further features might
+ require a different context, but this is as simple as implementing a named injection.
+ - There are some errors I handled such as empty list of words, but others I simply tell the view
+ to display a generic message. I think this can easily be changed and I decided to focus on more
+ important things within the time limit.
 
+## Time table
 
-## Topics
+The following is a overview of the time taken to developed the app. Since I was given 8 hours I
+planned for that target. I actually missed it, it took me around 9:30 hours.
 
-- How does the game work
-- How to install
-- Tools chosen and why
-- How is the architecture
-  -- Layers
-  -- MVP
+- 3 hours for planning - where roughly 2 were for the architecture described above and 1 was taken
+to figure out the best way to fit the game mechanics with the architecture.
+- The rest 6:30 hours were taken developing the solutions and facing some bugs. In the beginning I
+saved an hour as buffer for bugs, but this wasn't enough. Eventually I spent roughly 2 hours trying
+to find why ORM lite wasn't creating automatically ids and roughly half an hour trying to find
+why ``getIdAttribute`` would always return null for my custom views.
 
-- Log time/plan
-- Answer questions
+## Further work
 
+- I think one of the first steps would actually be improve the UI. This can easily be done by
+implementing the ``mock`` flavour with the appropriate implementation and make sure the UI behaves
+as expected.
+
+- As said above, there is a problem of synchronization between the text view fading and the words
+appearing. This should probably be one of the first things to tackle as it is both a big refactor
+and a big issue with the current implementation.
+
+- Remove the hardcoded measurements and make the animations respond to different view sizes.
+
+- Then one can start implementing features like pausing the game, saving the game, change the order
+of how words appear or even make them specific to different rounds. Since the application is
+sliced in different layers, one could even think of classifying the words as difficult, normal and
+easy and based on that sort the order which they appear in.
+
+- I would personally also setup a CI to make sure the application stays stable.
+
+- I would also add some end to end tests.
 
