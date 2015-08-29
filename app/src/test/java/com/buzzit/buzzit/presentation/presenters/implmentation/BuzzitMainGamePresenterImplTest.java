@@ -5,7 +5,9 @@ import com.buzzit.buzzit.data.models.Word;
 import com.buzzit.buzzit.domain.usecases.GetAllWordsUseCase;
 import com.buzzit.buzzit.domain.usecases.PopulateWordsStorageUseCase;
 import com.buzzit.buzzit.domain.usecases.RemoveWordUseCase;
+import com.buzzit.buzzit.presentation.events.GameEndEvent;
 import com.buzzit.buzzit.presentation.events.NewTargetWordEvent;
+import com.buzzit.buzzit.presentation.events.RightAnswerEvent;
 import com.buzzit.buzzit.presentation.views.BuzzitMainGameView;
 import com.buzzit.buzzit.testutils.ImmediateToImmediateSchedulerTransformer;
 import com.buzzit.buzzit.utils.rx.SequenceRepeaterObservableCreator;
@@ -81,6 +83,18 @@ public class BuzzitMainGamePresenterImplTest {
     presenter.onCreate();
 
     verify(view).positionOptionalView();
+  }
+
+  @Test public void should_register_for_events_on_onResume() {
+    presenter.onResume();
+
+    verify(bus).register(presenter);
+  }
+
+  @Test public void should_unregister_from_events_on_onResume() {
+    presenter.onPause();
+
+    verify(bus).unregister(presenter);
   }
 
   @Test public void should_tell_view_to_create_optional_text_moving_animation() {
@@ -190,7 +204,7 @@ public class BuzzitMainGamePresenterImplTest {
     when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(word));
 
     presenter.onCreate();
-    presenter.onGreenPlayerButtonClicked();
+    presenter.onPlayerButtonClicked(R.id.action_bar, R.color.black);
 
     verify(view).stopOptionalWordAnimation();
   }
@@ -205,27 +219,58 @@ public class BuzzitMainGamePresenterImplTest {
     when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
     when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(targetWord));
     presenter.onCreate();
-    presenter.onGreenPlayerButtonClicked();
+    presenter.onPlayerButtonClicked(R.id.action_bar, R.color.black);
 
     verify(getAllWordsUseCase).get();
   }
 
-
-
-  @Test public void should_tell_view_to_blink_accordingly_to_the_winner() {
-    List<Word> words = new ArrayList<>();
-    Word word = new Word();
-    word.setId(1);
-    word.setTextEng("it's amazing");
-    word.setTextSpa("issa amassing");
-    words.add(word);
-
-    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
-    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(word));
+  @Test public void should_post_game_end_event_when_game_finishes() {
+    when(populateWordsStorageUseCase.populate()).thenReturn(
+        Observable.<List<Word>>just(new ArrayList<Word>()));
 
     presenter.onCreate();
-    presenter.onGreenPlayerButtonClicked();
 
-    verify(view).blink(R.color.green);
+    verify(bus).post(any(GameEndEvent.class));
+  }
+
+  @Test public void should_post_event_with_right_answer() {
+    Word targetWord = new Word();
+    targetWord.setId(1);
+    targetWord.setTextEng("it's amazing");
+    targetWord.setTextSpa("issa amassing");
+    List<Word> words = new ArrayList<>();
+    words.add(targetWord);
+
+    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
+    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(targetWord));
+
+    int expectedID = R.id.action_bar;
+
+    presenter.onCreate();
+    presenter.onPlayerButtonClicked(expectedID, R.color.black);
+
+    ArgumentCaptor<RightAnswerEvent> captor = ArgumentCaptor.forClass(RightAnswerEvent.class);
+
+    verify(bus, atLeastOnce()).post(captor.capture());
+    assertThat(captor.getAllValues()).contains(new RightAnswerEvent(expectedID));
+  }
+
+  @Test public void should_tell_view_to_blink() {
+    Word targetWord = new Word();
+    targetWord.setId(1);
+    targetWord.setTextEng("it's amazing");
+    targetWord.setTextSpa("issa amassing");
+    List<Word> words = new ArrayList<>();
+    words.add(targetWord);
+
+    when(populateWordsStorageUseCase.populate()).thenReturn(Observable.just(words));
+    when(removeWordUseCase.remove(any(Word.class))).thenReturn(Observable.just(targetWord));
+
+    int expectedColor = R.color.black;
+
+    presenter.onCreate();
+    presenter.onPlayerButtonClicked(R.id.action_bar, expectedColor);
+
+    verify(view).blink(expectedColor);
   }
 }

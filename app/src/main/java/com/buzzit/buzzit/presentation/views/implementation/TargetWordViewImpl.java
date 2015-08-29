@@ -36,13 +36,15 @@ public class TargetWordViewImpl extends RelativeLayout implements TargetWordView
   @Override protected void onFinishInflate() {
     super.onFinishInflate();
     ButterKnife.bind(this);
-    ((BuzzitApplication) ((Activity) getContext()).getApplication()).getScopedGraph(
-        new TargetWordViewModule(this)).inject(this);
+    if (!isInEditMode()) {
+      ((BuzzitApplication) ((Activity) getContext()).getApplication()).getScopedGraph(
+          new TargetWordViewModule(this)).inject(this);
+    }
   }
 
   @Override protected void onAttachedToWindow() {
     super.onAttachedToWindow();
-    presenter.onAttachWindow();
+    if (!isInEditMode()) presenter.onAttachWindow();
   }
 
   @Override protected void onDetachedFromWindow() {

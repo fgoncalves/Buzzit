@@ -14,6 +14,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.buzzit.buzzit.presentation.presenters.BuzzitMainGamePresenter;
 import com.buzzit.buzzit.presentation.views.BuzzitMainGameView;
+import com.buzzit.buzzit.presentation.views.implementation.PlayerButtonViewImpl;
 import com.buzzit.buzzit.presentation.views.modules.BuzzitActivityModule;
 import java.util.Arrays;
 import java.util.List;
@@ -107,20 +108,12 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
     optionalWordAnimation.setDuration(BuildConfig.TIME_FOR_EACH_OPTIONAL * 1000);
   }
 
-  @OnClick(R.id.green_player_layout) public void onGreenPlayLayoutClick() {
-    presenter.onGreenPlayerButtonClicked();
-  }
-
-  @OnClick(R.id.yellow_player_layout) public void onYellowPlayLayoutClick() {
-    presenter.onYellowPlayerButtonClicked();
-  }
-
-  @OnClick(R.id.blue_player_layout) public void onBluePlayLayoutClick() {
-    presenter.onBluePlayerButtonClicked();
-  }
-
-  @OnClick(R.id.red_player_layout) public void onRedPlayLayoutClick() {
-    presenter.onRedPlayerButtonClicked();
+  @OnClick({
+      R.id.green_player_layout, R.id.yellow_player_layout, R.id.blue_player_layout,
+      R.id.red_player_layout
+  }) public void onPlayerButtonClicked(View view) {
+    PlayerButtonViewImpl playerButton = (PlayerButtonViewImpl) view;
+    presenter.onPlayerButtonClicked(playerButton.getId(), playerButton.getBlinkingColor());
   }
 
   /**
@@ -179,7 +172,7 @@ public class BuzzitActivity extends BuzzitBaseActivity implements BuzzitMainGame
       if (interpolatedTime > 0.5) {
         blinkingPane.setBackgroundColor(getResources().getColor(R.color.black));
       } else {
-        blinkingPane.setBackgroundColor(getResources().getColor(color));
+        blinkingPane.setBackgroundColor(color);
       }
     }
   }

@@ -1,12 +1,15 @@
 package com.buzzit.buzzit.presentation.presenters.implmentation;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.IdRes;
 import com.buzzit.buzzit.BuildConfig;
-import com.buzzit.buzzit.R;
 import com.buzzit.buzzit.data.models.Word;
 import com.buzzit.buzzit.domain.usecases.GetAllWordsUseCase;
 import com.buzzit.buzzit.domain.usecases.PopulateWordsStorageUseCase;
 import com.buzzit.buzzit.domain.usecases.RemoveWordUseCase;
+import com.buzzit.buzzit.presentation.events.GameEndEvent;
 import com.buzzit.buzzit.presentation.events.NewTargetWordEvent;
+import com.buzzit.buzzit.presentation.events.RightAnswerEvent;
 import com.buzzit.buzzit.presentation.presenters.BuzzitMainGamePresenter;
 import com.buzzit.buzzit.presentation.views.BuzzitMainGameView;
 import com.buzzit.buzzit.utils.rx.SchedulerTransformer;
@@ -72,30 +75,18 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
         .subscribe(new AllWordsSubscriber());
   }
 
-  @Override public void onGreenPlayerButtonClicked() {
-    if (isCurrentTranslationCorrect()) {
-      view.blink(R.color.green);
-      toNextState();
-    }
+  @Override public void onResume() {
+    bus.register(this);
   }
 
-  @Override public void onYellowPlayerButtonClicked() {
-    if (isCurrentTranslationCorrect()) {
-      view.blink(R.color.yellow);
-      toNextState();
-    }
+  @Override public void onPause() {
+    bus.unregister(this);
   }
 
-  @Override public void onBluePlayerButtonClicked() {
+  @Override public void onPlayerButtonClicked(@IdRes int viewID, @ColorRes int blinkingColor) {
     if (isCurrentTranslationCorrect()) {
-      view.blink(R.color.blue);
-      toNextState();
-    }
-  }
-
-  @Override public void onRedPlayerButtonClicked() {
-    if (isCurrentTranslationCorrect()) {
-      view.blink(R.color.red);
+      bus.post(new RightAnswerEvent(viewID));
+      view.blink(blinkingColor);
       toNextState();
     }
   }
@@ -114,6 +105,11 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
   private void toNextState() {
     switch (currentGameState) {
       case UNKNOWN:
+        if (currentAvailableWords.isEmpty()) {
+          currentGameState = GameState.END_GAME;
+          toNextState();
+          break;
+        }
         currentGameState = GameState.START_GAME;
         onGameStart();
         break;
@@ -145,8 +141,8 @@ public class BuzzitMainGamePresenterImpl implements BuzzitMainGamePresenter {
    * Called when the game is over
    */
   private void onGameEnd() {
-    // TODO: Cleat pending subscriptions
     view.stopOptionalWordAnimation();
+    bus.post(new GameEndEvent());
   }
 
   /**

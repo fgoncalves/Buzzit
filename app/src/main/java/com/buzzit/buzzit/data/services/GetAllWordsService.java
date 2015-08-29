@@ -17,5 +17,4 @@ public interface GetAllWordsService {
    * @return The list of all available words
    */
   Observable<List<Word>> get();
-
 }

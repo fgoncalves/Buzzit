@@ -1,5 +1,8 @@
 package com.buzzit.buzzit.presentation.presenters;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.IdRes;
+
 /**
  * Presenter for the main view of the game.
  * <p/>
@@ -9,11 +12,9 @@ public interface BuzzitMainGamePresenter {
 
   void onCreate();
 
-  void onGreenPlayerButtonClicked();
+  void onResume();
 
-  void onYellowPlayerButtonClicked();
+  void onPause();
 
-  void onBluePlayerButtonClicked();
-
-  void onRedPlayerButtonClicked();
+  void onPlayerButtonClicked(@IdRes int viewID, @ColorRes int blinkingColor);
 }
